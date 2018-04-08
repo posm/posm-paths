@@ -1,0 +1,17 @@
+{
+  "name": "posm-view-api",
+  "version": "0.0.1",
+  "description": "backend for posm-view app",
+  "main": "index.js",
+  "author": "POSM developers",
+  "license": "ISC",
+  "scripts": {
+    "migrate": "./node_modules/.bin/knex migrate:latest",
+    "docker-build": "docker build ."
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "knex": "^0.14.4",
+    "sqlite3": "^4.0.0"
+  }
+}
