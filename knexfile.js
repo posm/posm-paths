@@ -1,10 +1,8 @@
 const path = require('path'),
       dbPath = path.join(process.cwd(), 'db'),
-      dbFile = path.join(dbPath, 'posmview.sqlite'),
-      migrationsPath = path.join(dbPath, 'migrations');
+      dbFile = path.join(dbPath, 'posmview.db'),
 
 const def = {
-    migrations: { directory: migrationsPath, tableName: 'knex_migrations' },
     client: 'sqlite3',
     connection: { filename: dbFile},
     useNullAsDefault: true
