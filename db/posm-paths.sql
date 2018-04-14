@@ -1,8 +1,18 @@
-BEGIN TRANSACTION
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE Sequences(
+    id UUID NOT NULL PRIMARY KEY,
+    userId INTEGER NOT NULL,
+    images JSON1 NOT NULL,
+    FOREIGN KEY(userId) REFERENCES Users(id)
+);
 
 CREATE TABLE Images(
     id UUID NOT NULL PRIMARY KEY,
-    path TEXT NOT NULL, 
+    path TEXT NOT NULL,
     time INTEGER NOT NULL,
     seqId INTEGER NOT NULL,
     userId INTEGER NOT NULL,
@@ -15,16 +25,9 @@ SELECT AddGeometryColumn(
     'Images', 'loc', 4326, 'POINT', 'XY'
 );
 
-CREATE INDEX idx_images_time ON Images(time);
-
 CREATE TABLE Sequences(
     id UUID NOT NULL PRIMARY KEY,
     userId INTEGER NOT NULL,
     images JSON1 NOT NULL,
     FOREIGN KEY(userId) REFERENCES Users(id)
-);
-
-CREATE TABLE Users (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL
 );
