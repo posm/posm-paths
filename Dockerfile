@@ -41,6 +41,6 @@ RUN wget http://www.gaia-gis.it/gaia-sins/spatialite-tools-sources/spatialite-to
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf
 RUN sudo ldconfig
 
-# --- make the db init script and make it the entrypoint! --- #
-RUN cd /home/posm-view \
-    && npm install
+# --- init the database --- #
+RUN cd /home/posm-view &&
+    && spatialite ./db/posm-paths.sqlite3 < ./db/posm-paths.sql

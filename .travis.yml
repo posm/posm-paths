@@ -1,0 +1,12 @@
+sudo: required
+
+langauge: python
+
+services: 
+  - docker
+
+before_install:
+  - docker build -t posm-paths .
+
+script:
+  - docker run -it posm-paths /bin/bash -c 'echo "UNIT TESTS GO HERE"'
