@@ -6,7 +6,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t posm-paths .
+  - docker build -t posm/posmpaths .
 
 script:
-  - docker run posm-paths /bin/bash -c 'echo "UNIT TESTS GO HERE"'
+  - docker run posm/posmpaths /bin/bash -c 'echo "UNIT TESTS GO HERE"'

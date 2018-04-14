@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
-RUN mkdir /home/posm-view
-COPY ./ /home/posm-view/
+RUN mkdir /home/posm-paths
+COPY ./ /home/posm-paths/
 
 # --- get curl and deps for building node. --- #
 RUN apt-get update \
@@ -42,5 +42,6 @@ RUN echo "/usr/local/lib" >> /etc/ld.so.conf
 RUN sudo ldconfig
 
 # --- init the database --- #
-RUN cd /home/posm-view &&
+RUN cd /home/posm-paths &&
     && spatialite ./db/posm-paths.sqlite3 < ./db/posm-paths.sql
+
