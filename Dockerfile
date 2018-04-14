@@ -42,6 +42,5 @@ RUN echo "/usr/local/lib" >> /etc/ld.so.conf
 RUN sudo ldconfig
 
 # --- init the database --- #
-RUN cd /home/posm-paths &&
-    && spatialite ./db/posm-paths.sqlite3 < ./db/posm-paths.sql
-
+RUN cd /home/posm-paths/db \
+    && spatialite posm-paths.sqlite3 < posm-paths.sql
