@@ -24,10 +24,3 @@ CREATE TABLE Images(
 SELECT AddGeometryColumn(
     'Images', 'loc', 4326, 'POINT', 'XY'
 );
-
-CREATE TABLE Sequences(
-    id UUID NOT NULL PRIMARY KEY,
-    userId INTEGER NOT NULL,
-    images JSON1 NOT NULL,
-    FOREIGN KEY(userId) REFERENCES Users(id)
-);
