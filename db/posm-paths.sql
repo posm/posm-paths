@@ -1,3 +1,8 @@
+-- bring in spatialite --
+SELECT load_extension("libspatialite");
+SELECT InitSpatialMetaData();
+
+-- make the tables --
 CREATE TABLE Users (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
