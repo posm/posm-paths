@@ -6,19 +6,22 @@ COPY ./ /home/posm-paths/
 RUN apt-get update \
     && apt-get install -yq curl build-essential
 
-# --- go get node --- #
-RUN cd ~ \
-    && curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && sudo apt-get install -yq nodejs
-
-    # --- deps for spatialite --- #
+# --- deps for spatialite --- #
 RUN apt-get update \
     && apt-get install -yq wget \
                            sqlite3 \ 
                            libsqlite3-dev \
-                           libspatialite-dev
+                           libspatialite-dev \
+                           python \
+                           python-dev\
+                           python-pip \
+                           python-virtualenv
+
+# --- pyenv/pip --- #
+
+# --- virtualenv/download requirements --- #
+# RUN cd /home/posm-paths/db \
+    # && pip installl -r requirements.txt
 
 # --- init the database --- #
-RUN cd /home/posm-paths/db \
-    && sqlite3 posm-paths.sqlite3 < posm-paths.sql
+# RUN sqlite3 posm-paths.sqlite3 < posm-paths.sql
