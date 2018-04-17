@@ -17,11 +17,10 @@ RUN apt-get update \
                            python-pip \
                            python-virtualenv
 
-# --- pyenv/pip --- #
-
 # --- virtualenv/download requirements --- #
-# RUN cd /home/posm-paths/db \
-    # && pip installl -r requirements.txt
+RUN cd /home/posm-paths/db \
+    && virtualenv venv\
+    && pip installl -r requirements.txt
 
 # --- init the database --- #
 # RUN sqlite3 posm-paths.sqlite3 < posm-paths.sql
