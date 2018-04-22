@@ -17,13 +17,13 @@ python get-pip.py
 ### Build
 
 ```shell
-# cd the workding directory if needed
+# cd the working directory if needed
 cd  ${your-path-to}/posm-paths
 # create a virtual environment
-virtualenv venv
+virtualenv -p python3 venv
 # use the virutal environment
 source ./venv/bin/activate
-# download depenedencies
+# download dependencies
 pip install -r requirements.txt
 ```
 
