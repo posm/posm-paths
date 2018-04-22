@@ -1,2 +1,2 @@
-tornado=5.0.2
-pytest=3.5.0    
+tornado==5.0.2
+pytest==3.5.0

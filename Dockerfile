@@ -12,15 +12,9 @@ RUN apt-get update \
                            sqlite3 \ 
                            libsqlite3-dev \
                            libspatialite-dev \
-                           python \
-                           python-dev\
-                           python-pip \
+                           python3-pip \
                            python-virtualenv
 
-# --- virtualenv/download requirements --- #
-RUN cd /home/posm-paths/db \
-    && virtualenv venv\
-    && pip installl -r requirements.txt
-
 # --- init the database --- #
-# RUN sqlite3 posm-paths.sqlite3 < posm-paths.sql
+RUN cd /home/posm-paths/db \
+    && sqlite3 posm-paths.sqlite3 < posm-paths.sql
