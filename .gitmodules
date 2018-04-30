@@ -1,0 +1,3 @@
+[submodule "mapillary_tools"]
+	path = mapillary_tools
+	url = git@github.com:mapillary/mapillary_tools.git

@@ -2,19 +2,15 @@ FROM ubuntu:14.04
 RUN mkdir /home/posm-paths
 COPY ./ /home/posm-paths/
 
+
 # --- get curl and deps for building node. --- #
 RUN apt-get update \
-    && apt-get install -yq curl build-essential
-
-# --- deps for spatialite --- #
-RUN apt-get update \
-    && apt-get install -yq wget \
+    && apt-get install -yq curl \ 
+                           build-essential \
                            sqlite3 \ 
                            libsqlite3-dev \
                            libspatialite-dev \
-                           python3-pip \
-                           python-virtualenv
 
-# --- init the database --- #
-RUN cd /home/posm-paths/db \
-    && sqlite3 posm-paths.sqlite3 < posm-paths.sql
+# -- specific node version -- #
+RUN curl -sL https://deb.nodesource.com/setup_8.x \
+    && apt-get install nodejs
