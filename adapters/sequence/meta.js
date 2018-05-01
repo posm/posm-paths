@@ -21,7 +21,7 @@ module.exports = (image) => {
             resolve({ 
                 image: image,
                 loc: makeLoc(tags),
-                date: makeDate(tags)
+                timestamp: makeDate(tags)
             });
         })
         .catch(e => reject(e))

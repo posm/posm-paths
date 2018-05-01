@@ -10,7 +10,6 @@ const metadataSchema = require('../../schema').metadata;
 
 /* seqeunce adapter components */
 const meta = require('../../adapters/sequence/meta');
-
 const sequenceAdapter = require('../../adapters/sequence');
 
 const expect = chai.expect;
@@ -31,14 +30,16 @@ describe('sequence', () => {
 
         }
     })
-    // it ('does a thing', async () => {
-    //     try {
-    //         const locs = ['./testData/exif-gps-samples'].map(p => path.join(process.cwd(), p));
-    //         await sequenceAdapter(locs);
+    it ('given a path of images, generates a list of sequence objects', async () => {
+        try {
+            const paths = ['/testData/exif-gps-samples'].map(p => process.cwd() + p),
+                  sequences = await sequenceAdapter(paths);
 
-    //     } catch (e) {
-    //         console.error(e);
+                  console.log(sequences)
 
-    //     }
-    // })
+        } catch (e) {
+            console.error(e);
+
+        }
+    })
 })

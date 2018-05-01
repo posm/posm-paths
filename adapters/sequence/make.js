@@ -1,6 +1,8 @@
 'use strict';
 
-exports.date = (tags) => tags.GPSDateTime.toString();
+const dayjs = require('dayjs')
+
+exports.date = (tags) => dayjs(tags.GPSDateTime.toString());
 
 exports.loc = (tags) => { 
     return {

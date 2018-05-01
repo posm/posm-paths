@@ -32,19 +32,20 @@ const locSchema = Joi
  * valid: '2008-10-23T14:27:07.240Z'
  * invalid: '2008-9-23T14:27:07.240Z'
  */
-const dateSchema = Joi
-    .string()
-    .regex(/([1-2]{1}[0-9]{3})-([0-1]{1}[0-9]{1})-([0-3]{1}[0-9]{1})T([0-2]{1}[0-9]{1}):([0-6]{1}[0-9]{1}):([0-6]{1}[0-9]{1}).[0-9]{3}Z/)
+const timeStampSchema = Joi.object();
+// Joi
+//     .string()
+//     .regex(/([1-2]{1}[0-9]{3})-([0-1]{1}[0-9]{1})-([0-3]{1}[0-9]{1})T([0-2]{1}[0-9]{1}):([0-6]{1}[0-9]{1}):([0-6]{1}[0-9]{1}).[0-9]{3}Z/)
 
 module.exports = Joi
     .object()
     .keys({
         image: imageSchema,
         loc: locSchema,
-        date: dateSchema
+        timestamp: timeStampSchema
     })
     .requiredKeys(
         'image',
-        'loc',
-        'date'
+        'loc'
+        // 'timestamp'
     )
