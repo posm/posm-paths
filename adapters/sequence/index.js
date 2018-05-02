@@ -26,7 +26,7 @@ module.exports = (paths, cutDist, cutTime, cutSize) => {
             try {
                 const params = { 
                           dist: cutDist || 0, 
-                          time: cutTime || 0, 
+                          detla: cutTime || 0, 
                           size: cutSize || 0 
                       },
                       sequences = await buildSequences(flatten(images), params);

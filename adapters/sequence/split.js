@@ -1,33 +1,48 @@
+
 'use strict';
 
-const calcDistance = require('./calc').distance;
-const calcDelta = require('./calc').delta;
+const calcDistance = require('./helpers').calcDistance;
+const calcDelta = require('./helpers').calcDelta;
+const addSequence = require('helpers').addSequence
+const withinThresholds = require('helpers').withinThresholds;
 
 Promise = require('bluebird');
 
 /**
- * map/sort each image into lists of 'geo-time-objs'
- * filter conditional that
- *  - a. the image meets the decided cut off distances
- *  - b. the image meets the decided cut off time-delta
- *  - c. we don't have too many images in the sequence.
+ * provided list of image metadata objects and thresholds for  
  */
-
 module.exports = (metas, params) => {
-          // sort by date time
-    const sortedMetas = metas.sort((a, b) => a - b),
-          // pelumniariate babi!
-          pelmIndex = sortedMetas.length - 2;
+    const sortedMetas = metas.sort((a, b) => a.timestamp - b.timestamp),
+          pelIndex = sortedMetas.length - 2,
+          lastIdx = sortedMetas.length - 1,
+          sequences = {},
+          sequenceless = [];
+          maxDist = params.dist,
+          maxDelta = params.delta,
+          maxSize = params.maxSize;
 
-    Promise.map(sortedMetas, (meta, i) => {
-        if (i <= pelmIndex) {
-            const nextMeta = sortedMetas [i + 1]
-            meta.distance = calcDistance(meta.loc, nextMeta.loc);
-            meta.delta = calcDelta(meta.date, nextMeta.date);
-        
+    let currentSequence = [];
+
+    Promise.all(sortedMetas, (meta, i) => {
+        if (currentSequence.length === maxSize) {
+            sequences = addSequence({}, currentSequence);
+            currentSequence = [];
+
+        }
+
+        const partnerMeta = sortedMetas[i + (i <= pelIndex ? 1 : -1)],
+              meetsThreshold = withinThresholds(meta, partnerMeta);
+
+        if (meetsThreshold) {
+            currentSequence.push(meta);
+
+        } else {
+            sequenceless.push(meta);
         }
         
-        return meta;
+    })
+    .then(() => {
+        return { sequences: sequences, sequenceless: sequenceless}
     })
     
 
