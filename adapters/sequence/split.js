@@ -19,9 +19,7 @@ Promise = require('bluebird');
 module.exports = (metas, params) => {
     const sortedMetas = metas.sort((a, b) => a.timestamp - b.timestamp),
           pelIndex = sortedMetas.length - 2,
-          lastIdx = sortedMetas.length - 1,
           sequences = {},
-          sequenceless = [],
           maxDist = params.maxDist,
           maxDelta = params.maxDelta,
           maxSize = params.maxSize,
