@@ -7,10 +7,7 @@ Promise = require('bluebird');
 
 module.exports = (images, params) => {
     return Promise.map(images, async (image) => await meta(image))
-    .then(metas => {
-        const sortedMetas = metas.sort((a, b) => a.date - b.date);
-        return split(sortedMetas)
-    })
+    .then(async metas => await split(metas, params))
     .catch(e => { throw e; })
     
 }

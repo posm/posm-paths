@@ -1,0 +1,3 @@
+- make a new guy if the # is too large for a sequence
+- if the distnace is too close, skip adding that image.
+- or if when checking distance and time, one of them is greater than the max

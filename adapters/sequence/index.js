@@ -25,12 +25,13 @@ module.exports = (paths, cutDist, cutTime, cutSize) => {
         .then(async (images) => {
             try {
                 const params = { 
-                          dist: cutDist || 0, 
-                          detla: cutTime || 0, 
+                          maxDist: cutDist || 0.2,
+                          minDist: 0.1,
+                          maxDetla: cutTime || 120, 
                           size: cutSize || 0 
                       },
                       sequences = await buildSequences(flatten(images), params);
-                
+
                 resolve(sequences);
             } catch (e) {
                 reject(e);

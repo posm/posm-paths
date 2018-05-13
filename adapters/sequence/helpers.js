@@ -13,12 +13,10 @@ const uuidv4 = require('uuid/v4');
  * @return {number} euclidean distance between two points
  */
 exports.calcDistance = (metaLoc, nextMetaLoc) => {
-    return distance(
-        point([metaLoc.lon, metaLoc.lat]),
-        point([metaLoc.lon, metaLoc.lat])
-        // { units: 'miles'}
+    return Math.sqrt(
+        Math.pow(nextMetaLoc.lon - metaLoc.lon, 2) + 
+        Math.pow(nextMetaLoc.lat - metaLoc.lat, 2)
     )
-
 }
 
 /**
@@ -29,7 +27,7 @@ exports.calcDistance = (metaLoc, nextMetaLoc) => {
  * @return {number} milisecond diff between two dates.ee
  * 
  */
-exports.calcDelta = (metaDate, nextMetaDate) => metaDate.diff(nextMetaDate);
+exports.calcDelta = (metaDate, nextMetaDate) => nextMetaDate.diff(metaDate) / 1000;
 
 /**
  * given a sequence map, adds a new sequence array and returns the map.
@@ -39,18 +37,3 @@ exports.calcDelta = (metaDate, nextMetaDate) => metaDate.diff(nextMetaDate);
  * @return {object} updated sequenceMap
  */
 exports.addSequence = (sequenceMap, sequence) => { sequenceMap[uuidv4()] = sequence; return sequenceMap };
-
-/**
- * given thwo partner meta objects, determines if the two are within user defined time/distnace thresholds
- * 
- * @param {object} meta metadata object at current index of images
- * @param {object} partnerMeta metadata object for (either next or previous) partner meta object
- */
-exports.withinThresholds = (meta, partnerMeta) => {
-    const distance = calcDistance(meta.loc, nextMeta.loc);
-          delta = calcDelta(meta.timestamp, nextMeta.timestamp),
-          toMuchTime = delta > maxDelta
-          toFar = distance > maxDistance;
-
-    return !toFar && !toMuchTime;
-}

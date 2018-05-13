@@ -7,6 +7,7 @@ const Joi = require('joi');
 
 /* schemas that define valid/expected function outputs */
 const metadataSchema = require('../../schema').metadata;
+const sequencesSchema = require('../../schema').sequences;
 
 /* seqeunce adapter components */
 const meta = require('../../adapters/sequence/meta');
@@ -33,9 +34,11 @@ describe('sequence', () => {
     it ('given a path of images, generates a list of sequence objects', async () => {
         try {
             const paths = ['/testData/exif-gps-samples'].map(p => process.cwd() + p),
-                  sequences = await sequenceAdapter(paths);
+                  sequences = await sequenceAdapter(paths),
+                  validation = Joi.validate(sequences, sequencesSchema);
 
-                  console.log(sequences)
+            expect(validation.value).to.be.eql(sequences)
+            expect(validation.error).to.be.null;
 
         } catch (e) {
             console.error(e);

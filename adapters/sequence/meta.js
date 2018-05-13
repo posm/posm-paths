@@ -15,8 +15,7 @@ Promise = require('bluebird');
  */
 module.exports = (image) => {
     return new Promise((resolve, reject) => 
-        exif
-        .read(image)
+        exif.read(image)
         .then(tags => {
             resolve({ 
                 image: image,
