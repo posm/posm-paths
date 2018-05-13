@@ -3,7 +3,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const buildSequences = require('./build');
-const { flatten } = require('../../helpers');
+const flatten = require('../../helpers').flatten;
 
 Promise = require('bluebird')
 
@@ -25,8 +25,8 @@ module.exports = (paths, cutDist, cutTime, cutSize) => {
         .then(async (images) => {
             try {
                 const params = { 
-                          maxDist: cutDist || 0.2,
-                          minDist: 0.1,
+                          maxDist: cutDist || 300,
+                          minDist: 1,
                           maxDetla: cutTime || 120, 
                           size: cutSize || 0 
                       },

@@ -30,8 +30,7 @@ module.exports = (metas, params) => {
     sortedMetas.slice(0, pelIndex).forEach((meta, i) => {
         const partnerMeta = sortedMetas[i + 1],
               distance = calcDistance(meta.loc, partnerMeta.loc),
-              tooClose = false;
-            //   tooClose = distance < minDist;
+              tooClose = distance < minDist;
         
         // ... if image is not too close to its partner, add it to a sequence.
         if (!tooClose) {
