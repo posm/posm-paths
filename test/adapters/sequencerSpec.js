@@ -33,16 +33,9 @@ describe('sequence', () => {
     })
     it ('given a path of images, generates a list of sequence objects', async () => {
         try {
-            const paths = [
-                '/testData/exif-gps-samples', 
-                '/testData/danbjoseph'
-            ].map(p => process.cwd() + p),
+            const paths = ['/testData/exif-gps-samples', '/testData/danbjoseph'].map(p => process.cwd() + p),
                   sequences = await sequenceAdapter(paths),
                   validation = Joi.validate(sequences, sequencesSchema);
-            Object.keys(sequences).forEach(s => {
-                console.log(s);
-                console.log(sequences[s].length)
-            })
             expect(validation.value).to.be.eql(sequences)
             expect(validation.error).to.be.null;
 

@@ -39,10 +39,12 @@ module.exports = Joi
     .keys({
         image: imageSchema,
         loc: locSchema,
-        timestamp: timeStampSchema
+        timestamp: timeStampSchema,
+        id: Joi.string().guid({ version: [ 'uuidv4' ] })
     })
     .requiredKeys(
         'image',
         'loc',
-        'timestamp'
+        'timestamp',
+        'id'
     )

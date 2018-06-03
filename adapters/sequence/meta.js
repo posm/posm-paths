@@ -2,6 +2,7 @@
 
 const { ExifTool } = require('exiftool-vendored');
 const exif = new ExifTool();
+const uuidv4 = require('uuid/v4');
 const makeLoc = require('./make').loc;
 const makeDate = require('./make').date;
 
@@ -20,7 +21,8 @@ module.exports = (image) => {
             resolve({ 
                 image: image,
                 loc: makeLoc(tags),
-                timestamp: makeDate(tags)
+                timestamp: makeDate(tags),
+                id: uuidv4()
             });
         })
         .catch(e => reject(e))

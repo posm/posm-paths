@@ -4,6 +4,8 @@
 const calcDistance = require('./helpers').calcDistance;
 const calcDelta = require('./helpers').calcDelta;
 const addSequence = require('./helpers').addSequence
+const uuidv4 = require('uuid/v4');
+
 
 Promise = require('bluebird');
 
@@ -46,6 +48,8 @@ module.exports = (metas, params) => {
 
             }
             
+            // add a uuid then add it to the sequence!
+            meta.id = uuidv4();
             currentSequence.push(meta);
 
         }  

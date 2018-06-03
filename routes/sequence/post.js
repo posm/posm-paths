@@ -1,14 +1,14 @@
 'use strict';
 
-const sequencesSchema = require('../../schema/sequences.js');
+const pathsSchema = require('../../schema/paths');
 
 module.exports = {
 	method: 'POST',
 	path: '/sequence',
 	config: {
-		handler: require('../../handlers/sequence').get,
+		handler: require('../../handlers/sequence').post,
 		validate: {
-			payload: sequencesSchema,
+			payload:pathsSchema,
 			failAction: async (r, h, err) => err
 		}
 	}

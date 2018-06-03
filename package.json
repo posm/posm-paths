@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "migrate": "sqlite3 db/posm-paths.sqlite3 < db/posm-paths.sql",
-    "test": "./node_modules/.bin/mocha test/**/* --exit"
+    "test": "./node_modules/.bin/mocha test/**/* --exit",
+    "seed": "knex seed:run"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -20,7 +21,6 @@
     "joi": "^13.2.0",
     "knex": "^0.14.6",
     "mocha": "^5.1.1",
-    "node-fetch": "^2.1.2",
-    "turf": "^3.0.14"
+    "sqlite3": "^4.0.0"
   }
 }

@@ -1,7 +1,5 @@
 'use strict';
 
-const point = require('turf').point;
-const distance = require('turf').distance;
 const dayjs = require('dayjs')
 const uuidv4 = require('uuid/v4');
 

@@ -1,5 +1,5 @@
 const path = require('path'),
-      config = require('config')[process.env.NODE_ENV || 'development'],
+      config = require('./config')[process.env.NODE_ENV || 'development'],
       dbPath = path.join(__dirname, 'db'),
       dbFile = path.join(dbPath, config.db);
 

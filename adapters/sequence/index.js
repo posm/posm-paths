@@ -17,7 +17,7 @@ Promise = require('bluebird')
  * @return {array} array of sequence configuration objects
  */
 
-module.exports = (paths, minCutDist, maxCutDist, cutTime, cutSize) => {
+module.exports = (paths, minCutDist, maxCutDist, maxDelta, sequenceSize) => {
     return new Promise((resolve, reject) => {
         Promise.map(paths, async (p) => {
             const images = await fs.readdir(p);
@@ -26,10 +26,10 @@ module.exports = (paths, minCutDist, maxCutDist, cutTime, cutSize) => {
         .then(async (images) => {
             try {
                 const params = { 
-                          maxDist: maxCutDist || 300,
-                          minDist: minCutDist || 0.5,
-                          maxDetla: cutTime || 120, 
-                          size: cutSize || 0 
+                          maxDist: maxCutDist,
+                          minDist: minCutDist,
+                          maxDelta: maxDelta,
+                          size: sequenceSize
                       },
                       sequences = await buildSequences(flatten(images), params);
 
