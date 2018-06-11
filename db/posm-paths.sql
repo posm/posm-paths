@@ -1,10 +1,10 @@
 -- bring in spatialite --
-SELECT load_extension("libspatialite");
+SELECT load_extension("mod_spatialite");
 SELECT InitSpatialMetaData();
 
 -- make the tables --
 CREATE TABLE Users (
-    id INTEGER PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name TEXT NOT NULL
 );
 
@@ -29,3 +29,6 @@ CREATE TABLE Images(
 SELECT AddGeometryColumn(
     'Images', 'loc', 4326, 'POINT', 'XY'
 );
+
+--- get out of here!!! ---
+.exit

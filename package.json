@@ -8,7 +8,8 @@
   "scripts": {
     "migrate": "sqlite3 db/posm-paths.sqlite3 < db/posm-paths.sql",
     "test": "./node_modules/.bin/mocha test/**/* --exit",
-    "seed": "knex seed:run"
+    "seed": "knex seed:run",
+    "fixture": "yarn run migrate && yarn run seed"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

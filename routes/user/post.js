@@ -1,9 +1,15 @@
 'use strict';
 
-const pathsSchema = require('../../schema/paths');
+const Joi = require('joi');
 
 module.exports = {
 	method: 'POST',
-	path: '/sequence',
-	config: { handler: require('../../handlers/user').post }
+	path: '/user',
+	config: { 
+		handler: require('../../handlers/user').post,
+		validate: {
+			payload: Joi.object().keys({ name: Joi.string() }),
+			failAction: async (request, h, err) => err
+		}
+	}
 }

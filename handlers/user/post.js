@@ -6,16 +6,16 @@ const uuidv4 = require('uuid/v4');
 
 module.exports = async (r, h) => {
 	try {
-        const user = r.params.user,
-              users = await db('Users').select('name')[0];
+        const user = r.payload,
+              users = await db('Users').select('name');
 
-        if (users.contains(user)) {
+        if (users.indexOf(user) === -1) {
             Boom.badRequest('user already exists');
-        
         }
 
-        await db('Users').insert({id: uuidv4(), name: user});
-       
+        await db('Users').insert({id: 3, name: user.name});
+        return h.response({ upload: 'successful' }).code(200)
+
     } catch (error) {
         throw error;
     }

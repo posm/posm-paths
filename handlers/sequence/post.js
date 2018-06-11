@@ -19,13 +19,15 @@ module.exports = async (r, h) => {
 		sequences.forEach(async (sequence) => {
 			try {
 				const sequenceId = uuidv4();
-				await Promise.map([insertImages, insertSequence], async (builder) => {
-					try {
-						await builder(sequenceId, sequence, userId);
-					} catch (e) {
-						throw e;
-					}
-				})		
+				console.log(sequenceId);
+				return {}
+				// await Promise.map([insertImages, insertSequence], async (builder) => {
+				// 	try {
+				// 		await builder(sequenceId, sequence, userId);
+				// 	} catch (e) {
+				// 		throw e;
+				// 	}
+				// })		
 			} catch (e) {
 				throw e;
 			}

@@ -4,7 +4,8 @@ const base = {
 
 const development = {
     port: '8080',
-    mapillary: 'https://a.mapillary.com/v3/'
+    mapillary: 'https://a.mapillary.com/v3/',
+    injectDefaults: { simulate: { error: false }}
 };
 
 // for now...
