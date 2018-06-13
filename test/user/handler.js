@@ -26,6 +26,7 @@ describe('post', () => {
             for (let i = 0; i < 5; i++) {
                 fakeName += letters.charAt(Math.floor(Math.random() * letters.length));
             }
+            
             const request = mergeDefaults({
                       method: 'POST',
                       payload: { name: fakeName },

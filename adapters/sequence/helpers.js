@@ -41,4 +41,10 @@ exports.calcDelta = (metaDate, nextMetaDate) => nextMetaDate.diff(metaDate) / 10
  * @param {array} sequence sequence to be added to sequenceMap
  * @return {object} updated sequenceMap
  */
-exports.addSequence = (sequenceMap, sequence) => { sequenceMap[uuidv4()] = sequence; return sequenceMap };
+exports.addSequence = (sequences, sequence) => { 
+    sequences.push({
+        sequenceId: uuidv4(),
+        sequence: sequence
+    })
+    return sequences; 
+};

@@ -1,4 +1,7 @@
 .env
 .DS_Store
-./db/*.db
+./db/posm-paths.sqlite3
+./testData/danbjoseph
+.python_version
+.vscode
 node_modules

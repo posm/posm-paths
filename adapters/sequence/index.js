@@ -12,12 +12,13 @@ Promise = require('bluebird')
  * @param {array} paths list of directory paths holding images to make sequences of
  * @param {number} maxCutDist maximum distance allowed between two photos
  * @param {number} minCutDist minimum distance allowed between two photos
- * @param {cutTime} cutTime maximum time between two images
- * @param {cutSize} cutSize maximum size of a sequence.
+ * @param {number} cutTime maximum time between two images
+ * @param {number} cutSize maximum size of a sequence.
+ * @param {string} userId (optional) userId that when present attached to each sequence
  * @return {array} array of sequence configuration objects
  */
 
-module.exports = (paths, minCutDist, maxCutDist, maxDelta, sequenceSize) => {
+module.exports = (paths, minCutDist, maxCutDist, maxDelta, sequenceSize, userId) => {
     return new Promise((resolve, reject) => {
         Promise.map(paths, async (p) => {
             const images = await fs.readdir(p);
@@ -26,12 +27,19 @@ module.exports = (paths, minCutDist, maxCutDist, maxDelta, sequenceSize) => {
         .then(async (images) => {
             try {
                 const params = { 
-                          maxDist: maxCutDist,
-                          minDist: minCutDist,
-                          maxDelta: maxDelta,
-                          size: sequenceSize
-                      },
-                      sequences = await buildSequences(flatten(images), params);
+                    maxDist: maxCutDist,
+                    minDist: minCutDist,
+                    maxDelta: maxDelta,
+                    size: sequenceSize
+                };
+
+                let sequences = await buildSequences(flatten(images), params);
+                if (userId)  {
+                    sequences = sequences.map(sequence => {
+                        sequence.userId = userId
+                        return sequence
+                    });    
+                }
 
                 resolve(sequences);
             } catch (e) {
