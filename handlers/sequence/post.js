@@ -4,8 +4,8 @@ const Boom = require('boom');
 const db = require('../../connection');
 const uuidv4 = require('uuid/v4');
 const buildSequences = require('../../adapters/sequence');
-// const insertImages = require('./helpers').insertImages;
-// const insertSequence = require('./helpers').insertSequence;
+const insertImages = require('./helpers').insertImages;
+const insertSequence = require('./helpers').insertSequence;
 
 module.exports = async (r, h) => {
 	try {

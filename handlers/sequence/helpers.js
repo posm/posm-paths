@@ -13,11 +13,12 @@ exports.insertImages = (sequence) => {
 	})
 	.then(async (values) => {
 		try {
-			await db.raw(
-				`INSERT INTO Images (
-					id, path, time, seqId, userId, loc	
-				) VALUES ${values}`
-			)
+			await db.raw(`
+				SELECT load_extension('mod_spatialite');
+				INSERT INTO Images (
+					id, path, time, seqId, userId, GeomFromText('POINT(${loc.lat} ${loc.lon})')
+				) VALUES ${values}
+			`)
 		} catch (e) {
 			throw e;
 		}
@@ -38,11 +39,11 @@ exports.insertSequence = (sequence) => {
 	Promise.map(sequence, image => { return { id : image.id, loc: image.loc }})
 	.then(async (sequenceImages) => {
 		try {	
-			await db.raw(
-				`INSERT INTO Sequences (
+			await db.raw(`
+				INSERT INTO Sequences (
 					id, userId, images
-				) VALUES (${sequenceId}, ${userId}, JSON(${sequenceImages})`
-			)
+				) VALUES (${sequenceId}, ${userId}, JSON(${sequenceImages})
+			`)
 		} catch (e) {
 			throw e;
 		}
