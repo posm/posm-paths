@@ -1,7 +1,6 @@
 'use strict';
 
 const Boom = require('boom');
-const db = require('../../connection');
 const uuidv4 = require('uuid/v4');
 const buildSequences = require('../../adapters/sequence');
 const insertImages = require('./helpers').insertImages;
@@ -10,7 +9,7 @@ const insertSequence = require('./helpers').insertSequence;
 module.exports = async (r, h) => {
 	try {
 		const paths = r.payload,
-			  user = r.query.userId,
+			  userId = r.query.userId,
 			  minCutDist = r.params.minDist || 0.5,
 			  maxCutDist = r.params.maxDist || 300,
 			  maxDelta = r.params.maxDelta || 120,
@@ -19,9 +18,9 @@ module.exports = async (r, h) => {
 
 		sequences.forEach(async (sequence) => {
 			try {
-				await Promise.map([insertImages, insertSequence], async (builder) => {
+				await Promise.map([insertImages], async (inserter) => {
 					try {
-						await builder(sequence);
+						await inserter(sequence);
 					} catch (e) {
 						throw e;
 					}
@@ -34,6 +33,7 @@ module.exports = async (r, h) => {
 		return h.response({ upload: 'successful' }).code(200);
 
 	} catch (error) {
+		console.error(error);
 		return Boom.badImplementation(error.message);
 	}
 }

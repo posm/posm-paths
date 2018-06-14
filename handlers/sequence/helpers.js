@@ -1,30 +1,33 @@
 'use strict';
 
+const db = require('../../connection');
+
 /**
  * Provided parameters for a sequence and its images,
  * inserts images into the image table
  * @param {Array} sequence list of sequence images
  */
-exports.insertImages = (sequence) => {
-	const sequenceId = sequence.sequenceId,
-	      userId = sequence.userId;
-	Promise.map(sequence, image => {
-		return `(${image.id}, ${image.image}, ${image.timestamp}, ${sequenceId}, ${userId}, ${loc}),`
-	})
-	.then(async (values) => {
-		try {
-			await db.raw(`
-				SELECT load_extension('mod_spatialite');
-				INSERT INTO Images (
-					id, path, time, seqId, userId, GeomFromText('POINT(${loc.lat} ${loc.lon})')
-				) VALUES ${values}
-			`)
-		} catch (e) {
-			throw e;
-		}
-	})
-	.catch((error) => { throw error });
+exports.insertImages = async (sequenceMap) => {
+	const sequenceId = sequenceMap.sequenceId,
+		  userId = sequenceMap.userId,
+		  sequence = sequenceMap.sequence;
+		
+	try {
+		let values = await Promise.map(sequence, image => `${image.id}, ${image.image}, ${image.timestamp}, ${sequenceId}, ${userId}, GeomFromText('POINT(${image.loc.lat} ${image.loc.lon})'))`)
+		values = `(${values.join(',\n')})`
+	
+		await db.raw(`
+			SELECT load_extension('mod_spatialite');
+			INSERT INTO Images (
+				id, path, time, seqId, userId, loc
+			) VALUES ${values}
+		`)
 
+	} catch (error) {
+		console.error(error);
+		throw error;
+
+	}
 }
 
 /**
