@@ -14,19 +14,21 @@ const routes =  [
     require('../../routes/sequence').post
 ];
 
+const db = require('../../connection');
+
 before(async () => await server.liftOff(routes))
 describe('post', () => {
     it('replies 200 when sequence post is successful', async () => {
         try {
-            const request = mergeDefaults({
+            const userId = (await db('Users').select('id').where({ name: 'danbjoseph' }))[0].id,
+                  request = mergeDefaults({
                       method: 'POST',
                       payload: ['/testData/danbjoseph'].map(p => process.cwd() + p),
-                      url: '/sequence?userId=6cc99b2f-a00a-45c3-a74b-d532547dd852'
+                      url: `/sequence?userId=${userId}`
                   }),
                   r = await server.inject(request),
                   statusCode = r.statusCode;
                 
-            
             expect(statusCode).to.be.eql(200);
 
         } catch (error) {

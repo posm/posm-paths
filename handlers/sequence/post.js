@@ -18,13 +18,15 @@ module.exports = async (r, h) => {
 
 		sequences.forEach(async (sequence) => {
 			try {
-				await Promise.map([insertImages], async (inserter) => {
-					try {
-						await inserter(sequence);
-					} catch (e) {
-						throw e;
-					}
-				})		
+				// await insertSequence(sequence);
+				await insertImages(sequence);
+				// Promise.map([insertSequence], async (inserter) => {
+				// 	try {
+				// 		await inserter(sequence);
+				// 	} catch (e) {
+				// 		throw e;
+				// 	}
+				// })		
 			} catch (e) {
 				throw e;
 			}
