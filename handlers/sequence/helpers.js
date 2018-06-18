@@ -13,7 +13,7 @@ exports.insertImages = async (sequenceMap) => {
 			  userId = sequenceMap.userId;
 
 		let values = await Promise.map(sequenceMap.sequence, image => `('${image.id}', '${image.image}', '${image.timestamp}', '${sequenceId}', '${userId}', GeomFromText('POINT(${image.loc.lat} ${image.loc.lon})'))`);
-		console.log(values.slice(0,5).join(','))
+
 		await db.raw(`
 			SELECT load_extension('mod_spatialite');
 			INSERT INTO Images (
