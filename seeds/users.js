@@ -2,20 +2,15 @@
 
 const users = require('../testData/seeds').users;
 const uuidv4 = require('uuid/v4');
+const dbLoc = require('../config').test.db;
+const Database = require('../db');
 
-Promise = require('bluebird');
+Database.connect(dbLoc);
 
-exports.seed = async (knex, Promise) => {
-    try {
-        await knex('Users').del();
-        return Promise.map(users, async (user) => {
-            try {
-                await knex('Users').insert({id: uuidv4(), name: user.name})
-            } catch (error) {
-                console.error(error);
-            }
-        })
-    } catch (error) {
-        console.error(error);
-    }
+module.exports = (next) => {
+    const values =  users.map(user => `(${uuidv4()}, ${user.name})`).join(',');
+    const sql = `INSERT INTO Users VALUES ${values};`;
+    Database.execute(sql)
+    .then(() => next())
+    .catch(() => { console.error(error); next(); });
 }

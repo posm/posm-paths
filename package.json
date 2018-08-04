@@ -6,7 +6,6 @@
   "author": "Max Grossman <m.grossman1813@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "migrate": "sqlite3 db/posm-paths.sqlite3 < db/posm-paths.sql",
     "test": "./node_modules/.bin/mocha test/**/* --exit",
     "seed": "knex seed:run"
   },
@@ -20,7 +19,16 @@
     "hapi": "^17.4.0",
     "joi": "^13.2.0",
     "knex": "^0.14.6",
+    "migrate": "^1.6.0",
     "mocha": "^5.1.1",
-    "sqlite3": "^4.0.0"
+    "spatialite": "^0.1.0",
+    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "taskboard": "^2.0.6"
+  },
+  "devDependencies": {
+    "async": "^2.6.1",
+    "geojson-validation": "^0.2.1",
+    "turf-feature": "^1.0.0",
+    "turf-featurecollection": "^1.0.1"
   }
 }

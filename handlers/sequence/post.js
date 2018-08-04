@@ -3,8 +3,7 @@
 const Boom = require('boom');
 const uuidv4 = require('uuid/v4');
 const buildSequences = require('../../adapters/sequence');
-const insertImages = require('./helpers').insertImages;
-const insertSequence = require('./helpers').insertSequence;
+const insertImagesSequences = require('./helpers').insertImagesSequence;
 
 module.exports = async (r, h) => {
 	try {
@@ -18,15 +17,7 @@ module.exports = async (r, h) => {
 
 		sequences.forEach(async (sequence) => {
 			try {
-				// await insertSequence(sequence);
-				await insertImages(sequence);
-				// Promise.map([insertSequence], async (inserter) => {
-				// 	try {
-				// 		await inserter(sequence);
-				// 	} catch (e) {
-				// 		throw e;
-				// 	}
-				// })		
+				await insertImagesSequences(sequence)
 			} catch (e) {
 				throw e;
 			}

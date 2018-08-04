@@ -1,0 +1,6 @@
+- figure out how we should generate the vector tiles
+  - what be the input?
+  - just give it a bunch of feature collections?
+	 - will it respect individual featuree collection
+- get images inserted into the database
+- 
