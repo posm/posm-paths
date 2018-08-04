@@ -1,6 +1,7 @@
 .env
 .DS_Store
-db/**.sql*
+db/**.sqlite3
+db/migrations/.migrate
 testData/
 .python_version
 .vscode
