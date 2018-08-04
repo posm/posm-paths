@@ -21,8 +21,7 @@ class Database {
     connect() {
         try {
             const db = new sqlite3.Database(this._dbLoc);
-            Promise.promisifyAll(db);
-            this._db = db;
+            this._db = Promise.promisifyAll(db);
         } catch (error) {
             throw error;
         }
@@ -42,51 +41,15 @@ class Database {
     executeSpatial(sql) {
         return this._db
             .loadExtensionAsync(this._spatialite)
-            .then(() => this.execute(sql))
-            .catch((err) => { throw err; })
+            .then((res) => this.execute(sql))
+            .catch((err) => { throw err; });
     }
-    // async addImage() {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-    // async addSequence() {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-    // async addUser() {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-    // async getUser()  {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-    // async getImage()  {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-    // async getSequence()  {
-    //     try {
-
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
+    selectSpatial(sql) {
+        return this._db
+            .loadExtensionAsync(this._spatialite)
+            .then(() => this.select(sql))
+            .catch((err) => { throw err; });
+    }
 };
 
 const instance = new Database();

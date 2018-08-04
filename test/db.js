@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 const Database = require('../db');
 const fs = require('fs-extra');
-
+const gjv = require('geojson-validation');
 
 Promise = require('bluebird');
 
@@ -46,32 +46,33 @@ describe('db', () => {
         it('throws if provided select statement is invalid', () => {
             Database
                 .select('SELECT * FROM iDontExist')
-                .catch((err) => expect(err).instanceOf(Error));
+                .catch((err) => expect(err).to.be.instanceOf(Error));
         })
     })
-    // // stack exchange! -> https://gis.stackexchange.com/questions/184850/how-to-use-spatialite-functions-in-a-python-script
-    // it('can load libspatialite extension and do spatial things!', () => {
-    //     // aware of the callback hell. goal here was just to prove mod_spatialite would work...
-    //     db.loadExtension(libspatialite, (err) => {
-    //         const spatialMakin = 'SELECT InitSpatialMetaData(1);';
-    //         const dbMakin = 'CREATE TABLE my_line(id INTEGER PRIMARY KEY)';
-    //         const geomMakin = 'SELECT AddGeometryColumn("my_line","geom" , 4326, "LINESTRING", 2);';
-    //         const line = 'LINESTRING(45.554194 -122.686101, 45.433001 -122.762632)'
-    //         const lineMakinStatement = `INSERT INTO my_line VALUES (1, GeomFromText('${line}', 4326));`
-    //         const lineSelectinStatement = 'SELECT AsGeoJSON(geom) FROM my_line;'
-    //         db.run(spatialMakin, (err, row) => { 
-    //             db.run(dbMakin, (err, row) => {
-    //                 db.run(geomMakin, (err, row) => { 
-    //                     db.run(lineMakinStatement, (err, row) => {
-    //                         db.each(lineSelectinStatement, (err, row) => {
-    //                             const geojson = JSON.parse(row['AsGeoJSON(geom)']);
-    //                             expect(gjv.isLineString(geojson)).to.be.true;
-    //                         });
-    //                     });
-    //                 });
-    //             });
-    //         });
-    //         db.close();
-    //     })
-    // })
-})
+    describe('#executeSpatial', () => {
+        // stack exchange! -> https://gis.stackexchange.com/questions/184850/how-to-use-spatialite-functions-in-a-python-script
+        it('loads mod_spatialite and executes sqlite', () => {
+            const line = 'LINESTRING(45.554194 -122.686101, 45.433001 -122.762632)';
+            const sql = `
+                SELECT InitSpatialMetaData(1);
+                CREATE TABLE my_line(id INTEGER PRIMARY KEY);
+                SELECT AddGeometryColumn("my_line","geom" , 4326, "LINESTRING", 2);
+                INSERT INTO my_line VALUES (1, GeomFromText('${line}', 4326));
+            `
+            const selectLine = 'SELECT AsGeoJSON(geom) from my_line;'
+            Database
+                .executeSpatial(sql)
+                .then(() => Database.selectSpatial(selectLine))
+                .then((rows) => {
+                    const geojson = JSON.parse(rows[0]['AsGeoJSON(geom)']);
+                    expect(gjv.isLineString(geojson)).to.be.true;
+                });
+        });
+        it('throws an error if invalid sql provided', () => {
+            const badSql = 'SELECT AddGeometryColumn("not_my_line","geom" , 4326, "LINESTRING", 2);'
+            Database
+                .executeSpatial(badSql)
+                .catch((err) => expect(err).to.be.instanceof(Error));
+        })
+    });
+});
