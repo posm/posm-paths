@@ -8,7 +8,7 @@ class Database {
     constructor() {
         if (!Database.instance) {
             this._spatialite = process.env.SPATIALITE_LOCATION;
-            this._dbLoc = config[process.env.ENVIRONMENT].db;
+            this._dbLoc = config[process.env.ENVIRONMENT || 'develop'].db;
         }
         return Database.instance
     };

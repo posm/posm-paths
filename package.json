@@ -7,7 +7,10 @@
   "license": "MIT",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/**/* --exit",
-    "seed": "knex seed:run"
+    "migrate:up": "migrate up --state-file db/migrations/.migrate --migrations-dir db/migrations",
+    "migrate:down": "migrate down --state-file db/migrations/.migrate --migrations-dir db/migrations",
+    "seed": "node db/seeds/index.js",
+    "migrate:up:seed": "npm run migrate:up && npm run seed"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

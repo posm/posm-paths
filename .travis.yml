@@ -1,7 +1,5 @@
 sudo: required
 
-langauge: python
-
 services: 
   - docker
 

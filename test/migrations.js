@@ -1,22 +1,22 @@
 'use strict';
 
-const expect = require('chai').expect;
-const migrate = require('migrate');
+Promise = require('bluebird');
 
+const expect = require('chai').expect;
+const migrate = Promise.promisifyAll(require('migrate'));
 const path = require('path');
-const migrationsPath = path.join(process.cwd(), 'migrations');
+const migrationsPath = path.join(__dirname, '..', 'db', 'migrations');
 const migrationStore = path.join(migrationsPath, '.migrate');
-const migrationOpts = { migrationsDirectory: migrationsPath, stateStore: migrationStore };
+const migrationOpts = { migrationsDirectory: migrationsPath,  stateStore: migrationStore };
 
 describe('migrations', () => {
     it('migrates db up and back down', () => {
-        migrate.load(migrationOpts, (err, set) => {
-            if (err) throw err
-            console.log(set);
-            set.up((err, res) => {
-                if (err) throw err;
-                set.down((err, res) => { if (err) throw err; })
-            });
-        });
+        migrate.loadAsync(migrationOpts)
+            .then((set) => { 
+                set = Promise.promisifyAll(set);
+                set.upAsync().then(() => set.downAsync())
+            })
+            .catch((err) => console.error(err));
     });
-}); 
+});
+ 

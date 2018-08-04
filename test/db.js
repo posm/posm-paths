@@ -73,6 +73,6 @@ describe('db', () => {
             Database
                 .executeSpatial(badSql)
                 .catch((err) => expect(err).to.be.instanceof(Error));
-        })
+        });
     });
 });

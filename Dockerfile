@@ -12,5 +12,5 @@ RUN apt-get update \
                            libspatialite-dev \
 
 # -- specific node version -- #
-RUN curl -sL https://deb.nodesource.com/setup_8.x \
+RUN curl -sL https://deb.nodesource.com/setup_10.x \
     && apt-get install nodejs

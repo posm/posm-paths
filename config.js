@@ -2,9 +2,9 @@
 
 module.exports = {
     test: {
-        db: ':memory:'
+        db: './db/test-posm-paths.sqlite3'
     },
-    development: {
-        db: './db/posm-paths.sql'
+    develop: {
+        db: './db/posm-paths.sqlite3'
     }
 }
