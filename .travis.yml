@@ -1,9 +1,5 @@
 sudo: required
 
-env:
-  - SPATIALITE_LOCATION=/usr/lib/x86_64-linux/gnu/mod_spatialite.so.7
-  - ENVIRONMENT=test
-
 services: 
   - docker
 
