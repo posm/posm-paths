@@ -1,22 +1,30 @@
-'use strict'
+'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const upSQL = fs.readFileSync(path.join(__dirname, '..', 'sql', '1533377087768-add-users-up.sql')).toString();
-const downSQL = fs.readFileSync(path.join(__dirname, '..', 'sql', '1533377087768-add-users-down.sql')).toString();
-
-const dbLoc = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
+const dbLoc = require('../../config')[process.env.ENVIRONMENT || 'test'].db;
 const Database = require('../');
+
+const path = require('path');
+const readFile = require('fs-extra').readFile
+
+const up = path.join(__dirname, '..', 'sql', '1533377087768-add-users-up.sql')
+const down = path.join(__dirname, '..', 'sql', '1533377087768-add-users-down.sql')
+
 Database.connect(dbLoc);
 
-module.exports.up = function (next) {
-  Database.execute(upSQL)
-  .then(() => next())
-  .catch(error => { console.error(error); next(); });
+exports.up = (next) => {
+    readFile(up).then(sql => {
+        Database
+            .execute(sql.toString())
+            .then(() => next())
+            .catch((err) => { throw err; });
+    });
 };
 
-module.exports.down = function (next) {
-  Database.execute(downSQL)
-  .then(() => next())
-  .catch(error => { console.error(error); next(); });
-};
+exports.down = (next) => {
+    readFile(down).then(sql => {
+        Database
+            .execute(sql.toString())
+            .then(() => next())
+            .catch((err) => { throw err; })
+    })
+}

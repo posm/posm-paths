@@ -1,14 +1,11 @@
-const fs = require('fs-extra');
 const sqlite3 = require('sqlite3').verbose();;
 const config = require('../config');
-
 Promise = require('bluebird');
 
 class Database {
     constructor() {
         if (!Database.instance) {
-            this._spatialite = process.env.SPATIALITE_LOCATION;
-            this._dbLoc = config[process.env.ENVIRONMENT || 'develop'].db;
+            this._spatialite = process.env.SPATIALITE_LOCATION + '/mod_spatialite';
         }
         return Database.instance
     };
@@ -18,13 +15,17 @@ class Database {
     get db () {
         return this._db;
     }
-    connect() {
+    connect(dbLoc) {
         try {
-            const db = new sqlite3.Database(this._dbLoc);
+            const db = new sqlite3.Database(dbLoc);
+            this._dbLoc = dbLoc;
             this._db = Promise.promisifyAll(db);
         } catch (error) {
             throw error;
         }
+    }
+    close() {
+        this._db.close();
     }
     execute(sql) {
         return this._db

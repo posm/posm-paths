@@ -1,10 +1,14 @@
 sudo: required
 
+env:
+  - SPATIALITE_LOCATION=/usr/lib/x86_64-linux/gnu/mod_spatialite.so.7
+  - ENVIRONMENT=test
+
 services: 
   - docker
 
 before_install:
-  - docker build -t posm-paths .
+  - npm run clean-migrations && docker build -t posm-paths .
 
 script:
-  - docker run posm-paths /bin/bash -c 'echo "UNIT TESTS GO HERE"'
+  - docker run posm-paths /bin/bash -c 'npm install --build-from-sources && SPATIALITE_LOCATION=/usr/lib/x86_64-linux-gnu ENVIRONMENT=test npm run test:migrate'

@@ -10,8 +10,9 @@ Promise = require('bluebird');
 describe('db', () => {
     describe('#connect', () => {
         it('connects to the db at the provided path', async () => {
-            expect(Database.connect.bind(Database)).not.to.throw(Error);
-            expect(Database.dbLoc).to.eql(':memory:');
+            const dbLoc = require('../config').test.db;
+            Database.connect(dbLoc);
+            expect(Database.dbLoc).to.eql('./db/test-posm-paths.sqlite3');
         });
     });
     describe('#execute', () => {
@@ -54,7 +55,6 @@ describe('db', () => {
         it('loads mod_spatialite and executes sqlite', () => {
             const line = 'LINESTRING(45.554194 -122.686101, 45.433001 -122.762632)';
             const sql = `
-                SELECT InitSpatialMetaData(1);
                 CREATE TABLE my_line(id INTEGER PRIMARY KEY);
                 SELECT AddGeometryColumn("my_line","geom" , 4326, "LINESTRING", 2);
                 INSERT INTO my_line VALUES (1, GeomFromText('${line}', 4326));

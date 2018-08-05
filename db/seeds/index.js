@@ -1,6 +1,6 @@
 'use strict';
 
-const users = require('../../testData/seeds').users;
+const users = require('./users');
 const uuidv4 = require('uuid/v4');
 const dbLoc = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
 const Database = require('../');

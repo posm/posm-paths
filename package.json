@@ -6,8 +6,11 @@
   "author": "Max Grossman <m.grossman1813@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/**/* --exit",
-    "migrate:up": "migrate up --state-file db/migrations/.migrate --migrations-dir db/migrations",
+    "clean-migrations": "rm -f db/test-posm-paths.sqlite3 && rm -f db/posm-paths.sqlite3 && rm -f db/migrations/.migrate",
+    "test": "mocha test/**/* --exit",
+    "test:db": "mocha test/db.js",
+    "test:migrate": "npm run migrate:up:seed && npm run test:db",
+    "migrate:up": "./node_modules/.bin/migrate up --state-file db/migrations/.migrate --migrations-dir db/migrations",
     "migrate:down": "migrate down --state-file db/migrations/.migrate --migrations-dir db/migrations",
     "seed": "node db/seeds/index.js",
     "migrate:up:seed": "npm run migrate:up && npm run seed"

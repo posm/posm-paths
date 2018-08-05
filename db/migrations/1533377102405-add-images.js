@@ -1,22 +1,30 @@
-'use strict'
+'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const upSQL = fs.readFileSync(path.join(__dirname, '..', 'sql', '1533377102405-add-images-up.sql')).toString();
-const downSQL = fs.readFileSync(path.join(__dirname, '..', 'sql', '1533377102405-add-images-down.sql')).toString();
-
-const dbLoc = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
+const dbLoc = require('../../config')[process.env.ENVIRONMENT || 'test'].db;
 const Database = require('../');
+
+const path = require('path');
+const readFile = require('fs-extra').readFile;
+
+const up = path.join(__dirname, '..', 'sql', '1533377102405-add-images-up.sql')
+const down = path.join(__dirname, '..', 'sql', '1533377102405-add-images-down.sql')
+
 Database.connect(dbLoc);
 
-module.exports.up = function (next) {
-  Database.executeSpatial(upSQL)
-  .then(() => next())
-  .catch(error => { console.error(error); next(); })
+exports.up = (next) => {
+    readFile(up).then(sql => {
+        Database
+            .executeSpatial(sql.toString())
+            .then(() => next())
+            .catch((err) => { throw err; })
+    })
 }
 
-module.exports.down = function (next) {
-  Database.executeSpatial(downSQL)
-  .then(() => next())
-  .catch(error => { console.error(error); next(); });
+exports.down = (next) => {
+    readFile(down).then(sql => {
+        Database
+            .executeSpatial(sql.toString())
+            .then(() => next())
+            .catch((err) => { throw err; });
+    })
 }

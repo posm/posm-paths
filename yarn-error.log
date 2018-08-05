@@ -1,25 +1,17 @@
 Arguments: 
-  /home/max/.nvm/versions/node/v10.7.0/bin/node /home/max/.nvm/versions/node/v10.7.0/bin/yarn migrate:up
+  /home/max/.nvm/versions/node/v8.9.1/bin/node /home/max/.nvm/versions/node/v8.9.1/bin/yarn migrate:up:seed
 
 PATH: 
-  /home/max/.cargo/bin:/home/max/.pyenv/plugins/pyenv-virtualenv/shims:/home/max/.rbenv/shims:/home/max/.rbenv/bin:/home/max/.pyenv/bin:/home/max/.nvm/versions/node/v10.7.0/bin:usr/share/rvm/bin:/home/max/.cargo/bin:/home/max/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/share/rvm/bin
+  /home/max/.cargo/bin:/home/max/.pyenv/plugins/pyenv-virtualenv/shims:/home/max/.rbenv/shims:/home/max/.rbenv/bin:/home/max/.pyenv/bin:/home/max/.nvm/versions/node/v8.9.1/bin:usr/share/rvm/bin:/home/max/.cargo/bin:/home/max/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/share/rvm/bin
 
 Yarn version: 
-  1.7.0
+  1.5.1
 
 Node version: 
-  10.7.0
+  8.9.1
 
 Platform: 
   linux x64
-
-Trace: 
-  SyntaxError: /home/max/Desktop/github/posm/posm-paths/package.json: Unexpected token } in JSON at position 476
-      at JSON.parse (<anonymous>)
-      at /home/max/.nvm/versions/node/v10.7.0/lib/node_modules/yarn/lib/cli.js:1130:59
-      at Generator.next (<anonymous>)
-      at step (/home/max/.nvm/versions/node/v10.7.0/lib/node_modules/yarn/lib/cli.js:98:30)
-      at /home/max/.nvm/versions/node/v10.7.0/lib/node_modules/yarn/lib/cli.js:109:13
 
 npm manifest: 
   {
@@ -30,9 +22,14 @@ npm manifest:
     "author": "Max Grossman <m.grossman1813@gmail.com>",
     "license": "MIT",
     "scripts": {
-      "test": "./node_modules/.bin/mocha test/**/* --exit",
+      "clean-migrations": "rm -f db/test-posm-paths.sqlite3 && rm -f db/migrations/.migrate",
+      "test": "mocha test/**/* --exit",
+      "test:db": "mocha test/db.js",
+      "test:migrate": "mocha test/migrations.js && rm -f db/migrations/.migrate",
       "migrate:up": "migrate up --state-file db/migrations/.migrate --migrations-dir db/migrations",
       "migrate:down": "migrate down --state-file db/migrations/.migrate --migrations-dir db/migrations",
+      "seed": "node db/seeds/index.js",
+      "migrate:up:seed": "npm run migrate:up && npm run seed"
     },
     "dependencies": {
       "bluebird": "^3.5.1",
@@ -2095,3 +2092,19 @@ Lockfile:
   yallist@^3.0.0, yallist@^3.0.2:
     version "3.0.2"
     resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.2.tgz#8452b4bb7e83c7c188d8041c1a837c773d6d8bb9"
+
+Trace: 
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c npm run migrate:up && npm run seed
+  Directory: /home/max/Desktop/github/posm/posm-paths
+  Output:
+  
+      at ProcessTermError.MessageError (/home/max/.nvm/versions/node/v8.9.1/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/home/max/.nvm/versions/node/v8.9.1/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/home/max/.nvm/versions/node/v8.9.1/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at emitTwo (events.js:126:13)
+      at ChildProcess.emit (events.js:214:7)
+      at maybeClose (internal/child_process.js:925:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
