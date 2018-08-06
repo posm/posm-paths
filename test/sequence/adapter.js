@@ -19,13 +19,13 @@ Promise = require('bluebird');
 describe('sequence', () => {
     it('meta reads then selializes an image\'s exif metadata', async () => {
         try {
-            const image = './testData/exif-gps-samples/DSCN0010.JPG',
-                  metadata = await meta(image),
-                  validation = Joi.validate(metadata, metadataSchema);
+            const image = './testData/exif-gps-samples/DSCN0010.JPG';
+            const metadata = await meta(image)
+            const validation = Joi.validate(metadata, metadataSchema);
 
             expect(validation.value).to.be.eql(metadata);
             expect(validation.error).to.be.null;
-
+            return;
         } catch (e) {
             console.error(e);
 
@@ -33,12 +33,13 @@ describe('sequence', () => {
     })
     it ('given a path of images, generates a list of sequence objects', async () => {
         try {
-            const paths = ['/testData/exif-gps-samples', '/testData/danbjoseph'].map(p => process.cwd() + p),
-                  sequences = await sequenceAdapter(paths),
-                  validation = Joi.validate(sequences, sequencesSchema);
+            const paths = ['/testData/exif-gps-samples', '/testData/danbjoseph'].map(p => process.cwd() + p);
+            const sequences = await sequenceAdapter(paths);
+            const validation = Joi.validate(sequences, sequencesSchema);
+
             expect(validation.value).to.be.eql(sequences)
             expect(validation.error).to.be.null;
-
+            return;
         } catch (e) {
             console.error(e);
 

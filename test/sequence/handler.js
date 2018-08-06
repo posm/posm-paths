@@ -8,7 +8,8 @@ const uuidv4 = require('uuid/v4');
 
 const server = require('../server');
 const mergeDefaults = require('../helpers').mergeDefaults;
-const oldUserPayload = require('../../testData/payloads').postUser;
+const users = require('../../db/seeds/users');
+const danbjoseph = users[0];
 const routes =  [ 
     // require('../../routes/sequence').get,
     require('../../routes/sequence').post
@@ -20,11 +21,10 @@ before(async () => await server.liftOff(routes))
 describe('post', () => {
     it('replies 200 when sequence post is successful', async () => {
         try {
-            const userId = (await db('Users').select('id').where({ name: 'danbjoseph' }))[0].id,
-                  request = mergeDefaults({
+            const request = mergeDefaults({
                       method: 'POST',
                       payload: ['/testData/danbjoseph'].map(p => process.cwd() + p),
-                      url: `/sequence?userId=${userId}`
+                      url: `/sequence?userId=${danbjoseph.id}`
                   }),
                   r = await server.inject(request),
                   statusCode = r.statusCode;
