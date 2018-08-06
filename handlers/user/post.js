@@ -1,19 +1,23 @@
 'use strict';
 
 const Boom = require('boom');
-const db = require('../../connection');
-const uuidv4 = require('uuid/v4');
+const databaseLocation = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
+const Database = require('../../db');
 
 module.exports = async (r, h) => {
 	try {
-        const userName = r.payload.name,
-              users = (await db('Users').select('name')).map(user => user.name);
+        Database.connect(databaseLocation);
+        
+        const userName = r.payload.name
+        const users = await Database.select('SELECT name FROM Users');
 
-        if (users.indexOf(userName) > -1) {
+        if (users.map(user => user.name).indexOf(userName) > -1) {
             return Boom.badRequest('user already exists');
         }
 
-        await db('Users').insert({id: uuidv4(), name: userName});
+        await Database.addUsers(userName)
+        Database.close()
+
         return h.response({ upload: 'successful' }).code(200)
 
     } catch (error) {

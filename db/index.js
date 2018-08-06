@@ -1,5 +1,8 @@
+'use strict';
+
 const sqlite3 = require('sqlite3').verbose();;
-const config = require('../config');
+const uuidv4  = require('uuid/v4');
+
 Promise = require('bluebird');
 
 class Database {
@@ -50,6 +53,45 @@ class Database {
             .loadExtensionAsync(this._spatialite)
             .then(() => this.select(sql))
             .catch((err) => { throw err; });
+    }
+    addUsers(...users) {
+        users = users.map(user => `('${uuidv4()}', '${user}')`).join(',')
+        const sql =  `INSERT INTO Users VALUES ${users};`
+        return this
+            .execute(sql)
+            .then((result) => result)
+            .catch((err) => { throw err; });
+
+    }
+    addImages(userId, sequenceId, images) {
+        images = images.map((image, index) => {
+            return `(
+                '${image.id}',
+                '${image.image}',
+                '${image.timestamp}',
+                '${index}',
+                '${sequenceId}',
+                '${userId}',
+                GeomFromText('POINT(${image.loc.lat} ${image.loc.lon})', 4326)
+            )`
+        }).join(',');
+        const sql = `INSERT INTO Images VALUES ${images}`;
+        return this
+            .executeSpatial(sql)
+            .then((result) => result)
+            .catch((err) => { throw err; })
+    }
+    addSequence(userId, imageIds) {
+        const values = `(
+            '${uuidv4()}',
+            '${userId}',
+            json('${JSON.stringify(imageIds)}') 
+        )`;
+        const sql = `INSERT INTO Sequences VALUES ${values};`;
+        return this
+            .execute(sql)
+            .then((result) => result)
+            .catch((err) => { throw err; })
     }
 };
 

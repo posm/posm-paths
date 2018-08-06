@@ -6,3 +6,4 @@ testData/
 .python_version
 .vscode
 node_modules/
+yarn-error.log

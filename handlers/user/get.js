@@ -1,22 +1,22 @@
 'use strict';
 
 const Boom = require('boom');
-const db = require('../../connection');
-const uuidv4 = require('uuid/v4');
+const Database = require('../../db');
+const databaseLocation = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
 
 module.exports = async (r, h) => {
 	try {
-        const id = r.params.id,
-              ids = (await db('Users').select('id')).map(user => user.id);
+        Database.connect(databaseLocation);
+        const id = r.params.id;
+        const users = await Database.select(`SELECT name FROM Users WHERE id='${id}'`);
 
-        if (ids.indexOf(id) === -1) {
+        if (users.length === 0) {
             return Boom.badRequest('User not in database')
         }
 
-
-        const user = (await db('Users').select('name').where({id: id}))[0];
-
-        return h.response({ upload: 'successful', name: user.name }).code(200)
+        Database.close();
+        
+        return h.response({ upload: 'successful', name: users[0].name }).code(200)
 
     } catch (error) {
         console.error(error);

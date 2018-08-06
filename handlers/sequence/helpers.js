@@ -1,7 +1,6 @@
 'use strict';
 
-const db = require('../../connection');
-const fs = require('fs-extra');
+const Database = require('../../db');
 
 /**
  * Provided parameters for a sequence and its images,
@@ -13,11 +12,10 @@ exports.insertImagesSequence = async (sequenceMap) => {
 		const sequenceId = sequenceMap.sequenceId,
 			  userId = sequenceMap.userId;
 
-		let imageInserts = [],
-		    imageFeatures = [];
+		let images = [];
 
 		sequenceMap.sequence.forEach((image, index) => {
-			imageInserts.push(`
+			images.push(`
 				INSERT INTO Images (
 					id, path, time, seqIdx, seqId, userId, loc
 				) VALUES (
@@ -30,29 +28,11 @@ exports.insertImagesSequence = async (sequenceMap) => {
 					GeomFromText('POINT(${image.loc.lat} ${image.loc.lon})', 4326)
 				);`
 			);
-			imageFeatures.push({
-				type: 'Feature',
-				geometry: {
-				type: 'Point',
-					coordinates: [image.loc.lon, image.loc.lat]
-				},
-				properties: { id: image.id }
-			})
-		});
+		})
 
-		db.raw(`
-			INSERT INTO Sequences (
-				id, userId, images
-			) VALUES (
-				'${sequenceId}', 
-				'${userId}', 
-				json('${JSON.stringify(imageFeatures)}')
-			);
-			SELECT load_extension("mod_spatialite");
-			${imageInserts}
-		`)
-		.then((res) => {console.log(res)})
-		.then((error) => {console.error(error)})
+		Database.insertImages(images)
+			.then((res) => {consoleo(res)})
+			.then((error) => {console.error(error)})
 
 	} catch (error) {
 		console.error(error);

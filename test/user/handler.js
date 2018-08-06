@@ -1,6 +1,6 @@
 'use strict';
 
-const Joi = require('joi');
+// const Joi = require('joi');
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -8,7 +8,7 @@ const uuidv4 = require('uuid/v4');
 
 const server = require('../server');
 const mergeDefaults = require('../helpers').mergeDefaults;
-const oldUserPayload = require('../../testData/payloads').postUser;
+const danbjoseph = require('../../db/seeds/users')[0]; 
 const routes =  [ 
     require('../../routes/user').get,
     require('../../routes/user').post
@@ -46,7 +46,7 @@ describe('post', () => {
         try {
             const request = mergeDefaults({
                       method: 'POST',
-                      payload: { name: oldUserPayload.name },
+                      payload: { name: danbjoseph.name },
                       url: '/user'
                   }),
                   r = await server.inject(request),
@@ -64,14 +64,14 @@ describe('get', () => {
         try {
             const request = mergeDefaults({
                       method: 'GET',
-                      url: `/user/${oldUserPayload.id}`
+                      url: `/user/${danbjoseph.id}`
                   }),
                   r = await server.inject(request),
                   statusCode = r.statusCode,
                   result = r.result;
 
             expect(result.upload).to.equal('successful');
-            expect(result.name).to.equal(oldUserPayload.name);
+            expect(result.name).to.equal(danbjoseph.name);
             expect(statusCode).to.equal(200);
 
         } catch (error) {
