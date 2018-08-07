@@ -82,16 +82,13 @@ class Database {
             .catch((err) => { throw err; })
     }
     addSequence(sequence) {
-        const values = `(
-            '${uuidv4()}',
-            '${userId}',
-            
-        )`;
-        const sql = `INSERT INTO Sequences VALUES ${values};`;
+        const userId = sequence.userId;
+        const sequenceId = sequence.sequenceId;
+        const images = sequence.sequence;
         return this
-            .execute(sql)
+            .addImages(userId, sequenceId, images)
             .then((result) => result)
-            .catch((err) => { throw err; })
+            .catch((err) => { throw err; });
     }
 };
 
