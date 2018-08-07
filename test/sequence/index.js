@@ -2,5 +2,5 @@
 
 module.exports = {
     // handlerSpec: require('./handler'),
-    // adapterSpec: require('./adapter')
+    adapterSpec: require('./adapter')
 }

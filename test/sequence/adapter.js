@@ -9,9 +9,7 @@ const Joi = require('joi');
 const metadataSchema = require('../../schema').metadata;
 const sequencesSchema = require('../../schema').sequences;
 
-/* seqeunce adapter components */
-const meta = require('../../adapters/sequence/meta');
-const sequenceAdapter = require('../../adapters/sequence');
+const Sequence = require('../../adapters/sequence');
 
 const expect = chai.expect;
 Promise = require('bluebird');
@@ -20,7 +18,7 @@ describe('sequence', () => {
     it('meta reads then selializes an image\'s exif metadata', async () => {
         try {
             const image = './testData/exif-gps-samples/DSCN0010.JPG';
-            const metadata = await meta(image)
+            const metadata = await Sequence.meta(image)
             const validation = Joi.validate(metadata, metadataSchema);
 
             expect(validation.value).to.be.eql(metadata);
@@ -34,7 +32,7 @@ describe('sequence', () => {
     it ('given a path of images, generates a list of sequence objects', async () => {
         try {
             const paths = ['/testData/exif-gps-samples', '/testData/danbjoseph'].map(p => process.cwd() + p);
-            const sequences = await sequenceAdapter(paths);
+            const sequences = await Sequence.build(paths, 'directory');
             const validation = Joi.validate(sequences, sequencesSchema);
 
             expect(validation.value).to.be.eql(sequences)

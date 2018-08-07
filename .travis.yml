@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - npm run clean-migrations && docker build -t posm-paths .
+  - npm run migrate:clean && docker build -t posm-paths .
 
 script:
-  - docker run posm-paths /bin/bash -c 'npm install --build-from-sources && SPATIALITE_LOCATION=/usr/lib/x86_64-linux-gnu ENVIRONMENT=test npm run test:migrate'
+  - docker run posm-paths /bin/bash -c 'npm install --build-from-sources && SPATIALITE_LOCATION=/usr/lib/x86_64-linux-gnu ENVIRONMENT=test npm run test'

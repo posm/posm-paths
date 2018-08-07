@@ -81,11 +81,11 @@ class Database {
             .then((result) => result)
             .catch((err) => { throw err; })
     }
-    addSequence(userId, imageIds) {
+    addSequence(sequence) {
         const values = `(
             '${uuidv4()}',
             '${userId}',
-            json('${JSON.stringify(imageIds)}') 
+            
         )`;
         const sql = `INSERT INTO Sequences VALUES ${values};`;
         return this

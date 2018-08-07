@@ -7,3 +7,5 @@ testData/
 .vscode
 node_modules/
 yarn-error.log
+coverage/
+.nyc_output/
