@@ -3,6 +3,8 @@
 const sqlite3 = require('sqlite3').verbose();;
 const uuidv4  = require('uuid/v4');
 
+const Formatter = require('../formatter');
+
 Promise = require('bluebird');
 
 class Database {
@@ -33,19 +35,19 @@ class Database {
     execute(sql) {
         return this._db
             .execAsync(sql)
-            .then((result) => result)
+            .then((res) => res)
             .catch((err) => { throw err; });
     }
     select(sql) {
         return this._db
             .allAsync(sql)
-            .then((result) => result)
+            .then((res) => res)
             .catch((err) => { throw err });
     }
     executeSpatial(sql) {
         return this._db
             .loadExtensionAsync(this._spatialite)
-            .then((res) => this.execute(sql))
+            .then(() => this.execute(sql))
             .catch((err) => { throw err; });
     }
     selectSpatial(sql) {
@@ -59,7 +61,7 @@ class Database {
         const sql =  `INSERT INTO Users VALUES ${users};`
         return this
             .execute(sql)
-            .then((result) => result)
+            .then((res) => res)
             .catch((err) => { throw err; });
 
     }
@@ -78,7 +80,7 @@ class Database {
         const sql = `INSERT INTO Images VALUES ${images}`;
         return this
             .executeSpatial(sql)
-            .then((result) => result)
+            .then((res) => res)
             .catch((err) => { throw err; })
     }
     addSequence(sequence) {
@@ -87,8 +89,30 @@ class Database {
         const images = sequence.sequence;
         return this
             .addImages(userId, sequenceId, images)
-            .then((result) => result)
+            .then((res) => res)
             .catch((err) => { throw err; });
+    }
+    getSequence(id) {
+        const sql = `
+            SELECT AsGeoJSON(loc), seqId
+            FROM Images
+            WHERE seqId='${id}';
+        `;
+        return this
+            .selectSpatial(sql)
+            .then(res => res)
+            .catch(err => { throw err; });
+    }
+    getSequenceInfo(where) {
+        const sql = `
+            SELECT DISTINCT(seqId)
+            FROM Images
+            ${where};
+        `
+        return this
+            .select(sql)
+            .then(res => res)
+            .catch(err => { throw err; });
     }
 };
 

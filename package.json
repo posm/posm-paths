@@ -6,7 +6,8 @@
   "author": "Max Grossman <m.grossman1813@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test/**/* --exit",
+    "test": "npm run migrate:clean && npm run migrate:up:seed && npm run test:unit",
+    "test:unit": "mocha test/**/*.js --exit",
     "test:db": "mocha test/db.js",
     "test:migrate": "npm run migrate:up:seed && npm run test:db",
     "migrate:clean": "rm -f db/test-posm-paths.sqlite3 && rm -f db/posm-paths.sqlite3 && rm -f db/migrations/.migrate",
