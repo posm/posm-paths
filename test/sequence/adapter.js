@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs-extra');
+const uuidv4 = require('uuid/v4');
 const path = require('path');
 const chai = require('chai');
 const Joi = require('joi');
@@ -15,6 +16,14 @@ const expect = chai.expect;
 Promise = require('bluebird');
 
 describe('sequence', () => {
+    describe('#calcDistance', () => {
+        it('calculates Haverstein distance between two points', () => {
+            const point1 = { lat: 40, lon: -122 };
+            const point2 = { lat: 40.2, lon: -122.009 };
+            const dist = Sequence.calcDistance(point1, point2);
+            expect(dist).to.not.be.null
+        })
+    })
     it('meta reads then selializes an image\'s exif metadata', async () => {
         try {
             const image = './testData/exif-gps-samples/DSCN0010.JPG';
@@ -29,19 +38,44 @@ describe('sequence', () => {
 
         }
     })
-    it ('given a path of images, generates a list of sequence objects', async () => {
+    it ('given a path of images sufficiently close together in space in time, returns sequence of same length', async () => {
         try {
-            const paths = ['/testData/exif-gps-samples', '/testData/danbjoseph'].map(p => process.cwd() + p);
+            const paths = [ '/testData/danbjoseph2' ].map(p => process.cwd() + p);
             const sequences = await Sequence.build(paths, 'directory');
             const validation = Joi.validate(sequences, sequencesSchema);
 
             expect(validation.value).to.be.eql(sequences)
             expect(validation.error).to.be.null;
-            return;
+
+            expect(sequences[0].images.length).to.eql(8);
+
         } catch (e) {
             console.error(e);
 
         }
     })
-    .timeout(10000000)
+    // it('given path with images less than max size, makes one big sequence', async () => {
+    //     try {
+    //         const paths = ['/testData/100MSDCF'].map(p => process.cwd() + p);
+    //         const sequences = await Sequence.build(paths, 'directory', uuidv4(), { maxSize: 10000 });
+    //         expect(sequences.length).to.eql(1);
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // })
+    // .timeout(10000000)
+    // it('given multiple image paths, makes multiple sequenecs', async () => {
+    //     try {
+    //         const paths = ['/testData/100MSDCF', '/testData/103MSDCF'].map(p => process.cwd() + p);
+    //         const sequences = await Sequence.build(paths, 'directory', uuidv4(), { maxSize: 1000 });
+    //         const validation = Joi.validate(sequences, sequencesSchema);
+
+    //         expect(validation.value).to.be.eql(sequences)
+    //         expect(validation.error).to.be.null;
+
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // })
+    // .timeout(10000000)
 })

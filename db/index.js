@@ -86,7 +86,7 @@ class Database {
     addSequence(sequence) {
         const userId = sequence.userId;
         const sequenceId = sequence.sequenceId;
-        const images = sequence.sequence;
+        const images = sequence.images;
         return this
             .addImages(userId, sequenceId, images)
             .then((res) => res)

@@ -9,6 +9,6 @@ module.exports = Joi
         Joi.object().keys({
             userId: Joi.string().guid({ versionO: [ 'uuidv4' ]}),
             sequenceId: Joi.string().guid({ version: [ 'uuidv4' ] }),
-            sequence: Joi.array().items(metadata)
+            images: Joi.array().items(metadata)
         })
     );

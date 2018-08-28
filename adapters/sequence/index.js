@@ -20,20 +20,14 @@ class Sequence {
         return Sequence.instance;
     }
 
-    addSequence (sequences, sequence) {
-        sequences.push({ sequenceId: uuidv4(), sequence: sequence });
+    addSequence (sequences, images) {
+        sequences.push({ sequenceId: uuidv4(), images: images });
         return sequences;
     }
 
-    build (source, type, minCutDist, maxCutDist, maxDelta, seqSize, userId) {
+    build (source, type, userId, params) {
         return this.fromSource(source, type).then(images => {
-            const params = {
-                maxDist: maxCutDist,
-                minDist: minCutDist,
-                maxDelta: maxDelta,
-                size: seqSize
-            }
-            return this.cut(flatten(images), params).then(sequences => {
+            return this.cut(flatten(images), params || {}).then(sequences => {
                 if (userId) {
                     sequences.map(sequence => {
                         sequence.userId = userId;
@@ -48,17 +42,22 @@ class Sequence {
     }
 
     calcDelta(date, nextDate) {
-        return nextDate.diff(date) / 1000;
+        return nextDate.diff(date) / 1000; // second difference
     }
 
-    // https://gist.github.com/rochacbruno/2883505
+    // https://www.movable-type.co.uk/scripts/latlong.html
+    // response is in meters
     calcDistance(loc, nextLoc) {
-        const R = 6371e3;
-        const diffLat = this.toRadian(nextLoc.lat) - this.toRadian(loc.lat);
-        const diffLon = this.toRadian(nextLoc.lon) - this.toRadian(loc.lon);
-        const a = Math.sin(diffLat / 2) * Math.sin(diffLat / 2) + Math.cos(this.toRadian(loc.lat)) *
-                  Math.cos(this.toRadian(nextLoc.lat)) * Math.sin(diffLon / 2) * Math.sin(diffLon / 2);
-        
+        const R = 6371e3; // meters
+        const radLat1 = this.toRadian(loc.lat);
+        const radLat2 = this.toRadian(nextLoc.lat)
+        const radDiffLat = this.toRadian(nextLoc.lat - loc.lat);
+        const radDiffLon = this.toRadian(nextLoc.lon - loc.lon);
+
+        const a = Math.sin(radDiffLat/2) * Math.sin(radDiffLat/2) +
+                  Math.cos(radLat1) * Math.cos(radLat2) *
+                  Math.sin(radDiffLon/2) * Math.sin(radDiffLon/2);
+
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));    
         return R * c;
     }   
@@ -79,7 +78,8 @@ class Sequence {
     }
 
     makeDate(tags) {
-        return dayjs(tags.GPSDateTime.toString());
+        if (tags.GPSDateTime === undefined) console.log(tags);
+        return dayjs(tags.GPSDateTime.toString())
     }
 
     makeLoc(tags) {
@@ -91,57 +91,65 @@ class Sequence {
 
     meta(image) {
         return exif.read(image).then(tags => {
-            return {
-                image: image,
-                loc: this.makeLoc(tags),
-                timestamp: this.makeDate(tags),
-                id: uuidv4()
+            const spatial = !tags.hasOwnProperty('GPSLongitude') && !tags.hasOwnProperty('GPSLatitude');
+            if (spatial) {
+                return {
+                    image: image,
+                    loc: this.makeLoc(tags),
+                    timestamp: this.makeDate(tags),
+                    id: uuidv4()
+                }
+            } else {
+                return {}
             }
         })
         .catch(err => { throw err; });
     }
 
     toRadian(coord) {
-        return coord * (Math.PI / 100)
+        return coord * (Math.PI / 180)
     }
     
     split(metas, params) {
-        const sortedMetas = metas.sort((a, b) => a.timestamp - b.timestamp);
-        const pelIndex = sortedMetas.length - 2;
+        metas = metas.sort((a, b) => a.timestamp - b.timestamp);
         const sequences = [];
-        const maxDist = params.maxDist;
-        const maxDelta = params.maxDelta;
-        const maxSize = params.maxSize;
-        const minDist = params.minDist;
-        let currentSequence = [];
+        const minDist = params.minDist || 0.5; // meters, half a meter
+        const maxDist = params.maxDist || 300;
+        const maxDelta = params.maxDelta || 120; // seconds, 2 minutes a part
+        const maxSize = params.maxSize || 100;
+        let currentImages = [];
 
-        sortedMetas.slice(0 , pelIndex).forEach((meta, i) => {
-            const partnerMeta = sortedMetas[i + 1],
-                  distance = this.calcDistance(meta.loc, partnerMeta.loc),
-                  tooClose = distance < minDist;
+        for (let i = 0, metasLength = metas.length; i < metasLength; i++) {
+            const meta = metas[i]
+            meta.id = uuidv4();
             
-            // ... if image is not too close to its partner, add it to a sequence.
-            if (!tooClose) {
-                // ... if the current sequence length matches the maximum size,
-                //     or images are too far apart (in space or time), 
-                //     add the current sequence to the sequence map, then make a new sequence.
-                const delta = this.calcDelta(meta.timestamp, partnerMeta.timestamp),
-                      needNewSequence = currentSequence.length === maxSize || distance > maxDist || delta > maxDelta;
-    
-                if (needNewSequence) {
-                    this.addSequence(sequences, currentSequence);
-                    currentSequence = [];
-    
-                }
-                
-                // add a uuid then add it to the sequence!
-                meta.id = uuidv4();
-                currentSequence.push(meta);
-    
-            }  
-        })
+            if (i === metasLength - 1) {
+                currentImages.push(meta)                
+            } else {
 
-        if (currentSequence.length > 0) this.addSequence(sequences, currentSequence);
+                const partnerMeta = metas[i + 1];
+                const distance = this.calcDistance(meta.loc, partnerMeta.loc);
+                const tooClose = distance < minDist;
+                
+                // ... if image is not too close to its partner, add it to a sequence.
+                if (!tooClose) {
+                    // ... if the current sequence length matches the maximum size,
+                    //     or images are too far apart (in space or time), 
+                    //     add the current sequence to the sequence map, then make a new sequence.
+                    const delta = this.calcDelta(meta.timestamp, partnerMeta.timestamp);
+                    const needNewSequence = currentImages.length === maxSize || distance > maxDist || delta > maxDelta;
+                    if (needNewSequence) {
+                        this.addSequence(sequences, currentImages);
+                        currentImages = [];
+        
+                    }
+                    // add a uuid then add it to the sequence!
+                    currentImages.push(meta);
+                }  
+            }
+        }
+
+        if (currentImages.length > 0) this.addSequence(sequences, currentImages);
         return sequences;
     }
 }
