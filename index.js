@@ -11,6 +11,8 @@ const server = Hapi.server({
 const initServer = async () => { 
     await server.register(require('inert'));
     server.route(routes)
+    await server.start();
+    console.log(`Server running at: ${server.info.uri}`);
 }
 
 process.on('unhandledRejection', (err) => {

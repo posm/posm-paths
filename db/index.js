@@ -74,7 +74,7 @@ class Database {
                 '${index}',
                 '${sequenceId}',
                 '${userId}',
-                GeomFromText('POINT(${image.loc.lat} ${image.loc.lon})', 4326)
+                GeomFromText('POINT(${image.loc.lon} ${image.loc.lat})', 4326)
             )`
         }).join(',');
         const sql = `INSERT INTO Images VALUES ${images}`;
@@ -94,7 +94,7 @@ class Database {
     }
     getSequence(id) {
         const sql = `
-            SELECT AsGeoJSON(loc), seqId
+            SELECT AsGeoJSON(loc), id, seqId
             FROM Images
             WHERE seqId='${id}';
         `;

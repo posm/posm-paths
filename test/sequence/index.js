@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = {
-    // handlerSpec: require('./handler'),
+    handlerSpec: require('./handler'),
     adapterSpec: require('./adapter')
 }

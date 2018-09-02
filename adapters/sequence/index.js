@@ -55,7 +55,7 @@ class Sequence {
         const radDiffLon = this.toRadian(nextLoc.lon - loc.lon);
 
         const a = Math.sin(radDiffLat/2) * Math.sin(radDiffLat/2) +
-                  Math.cos(radLat1) * Math.cos(radLat2) *
+                  Math.cos(radLat1) * Math.cos(radLat2) *   
                   Math.sin(radDiffLon/2) * Math.sin(radDiffLon/2);
 
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));    
@@ -63,9 +63,22 @@ class Sequence {
     }   
 
     cut(images, params) {
-        return Promise
-            .map(images, (image) => this.meta(image))
-            .then(metas => this.split(metas, params))
+        let metas = [];
+        return Promise.each(images, (image) => {
+            return exif.read(image).then(tags => {
+                const spatial = tags.hasOwnProperty('GPSLongitude') && tags.hasOwnProperty('GPSLatitude');
+                if (spatial) {
+                    metas.push({
+                        image: image,
+                        loc: this.makeLoc(tags),
+                        timestamp: this.makeDate(tags),
+                        id: uuidv4()
+                    });
+                }
+            })
+            .catch(err => { throw err; });
+        })
+        .then(() => this.split(metas, params))
     }
 
     fromSource(source, type) {
@@ -89,27 +102,9 @@ class Sequence {
         }
     }
 
-    meta(image) {
-        return exif.read(image).then(tags => {
-            const spatial = !tags.hasOwnProperty('GPSLongitude') && !tags.hasOwnProperty('GPSLatitude');
-            if (spatial) {
-                return {
-                    image: image,
-                    loc: this.makeLoc(tags),
-                    timestamp: this.makeDate(tags),
-                    id: uuidv4()
-                }
-            } else {
-                return {}
-            }
-        })
-        .catch(err => { throw err; });
-    }
-
     toRadian(coord) {
         return coord * (Math.PI / 180)
     }
-    
     split(metas, params) {
         metas = metas.sort((a, b) => a.timestamp - b.timestamp);
         const sequences = [];
