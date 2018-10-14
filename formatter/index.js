@@ -17,8 +17,8 @@ class Formatter {
             const features = rows.map(row => {
                 const base = { type: 'Feature' }
                 let properties = {};
-                const geometry = JSON.parse(row['AsGeoJSON(loc)']);
-                delete row['AsGeoJSON(loc)'];
+                const geometry = JSON.parse(row['geometry']);
+                delete row['geometry'];
                 Object.entries(row).forEach(entry => properties = Object.assign(properties, { [entry[0]] : entry[1] }));
                 return Object.assign(base, { geometry: geometry, properties: properties });
             })
@@ -31,7 +31,8 @@ class Formatter {
     }
     whereAnd(config) {
         const conditionals = Object.entries(config).map(entry => {
-            const colKey = entry[0], values = flatten([`'${entry[1]}'`]).join(',');
+            const colKey = entry[0];
+            const values = flatten([`'${entry[1]}'`]).join(',');
             return `${colKey} IN (${values})`; 
         }).join(' AND ');
         return `WHERE ${conditionals}`;

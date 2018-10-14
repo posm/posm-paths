@@ -1,6 +1,8 @@
 .env
 .DS_Store
 db/*.sqlite3
+db/**/*.geojson
+testData/**/*.geojson
 db/migrations/.migrate
 testData/
 .python_version
@@ -9,3 +11,4 @@ node_modules/
 yarn-error.log
 coverage/
 .nyc_output/
+yarn.lock

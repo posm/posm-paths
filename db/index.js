@@ -92,9 +92,19 @@ class Database {
             .then((res) => res)
             .catch((err) => { throw err; });
     }
+    getAllImages() {
+        const sql = `
+            SELECT AsGeoJSON(loc) as geometry, id, seqId
+            FROM Images;
+        `
+        return this
+            .selectSpatial(sql)
+            .then(res => Formatter.toFeatureCollection(res))
+            .catch(err => { throw err; });
+    }
     getSequence(id) {
         const sql = `
-            SELECT AsGeoJSON(loc), id, seqId
+            SELECT AsGeoJSON(loc) as geometry, id, seqId
             FROM Images
             WHERE seqId='${id}';
         `;

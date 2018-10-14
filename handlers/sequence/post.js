@@ -4,6 +4,9 @@ const Boom = require('boom');
 const Sequence = require('../../adapters/sequence');
 const Database = require('../../db');
 const databaseLocation = require('../../config')[process.env.ENVIRONMENT || 'develop'].db;
+const BaseSequence = require('../../baseSequence');
+const baseSequence = BaseSequence.getInstance();
+
 
 Promise = require('bluebird');
 
@@ -22,6 +25,9 @@ module.exports = async (r, h) => {
 		Database.connect(databaseLocation);
 		await Promise.each(sequences, (sequence) => Database.addSequence(sequence).catch(err => { throw err; }))
 		Database.close();
+		
+		baseSequence.call('rebuild');
+
 		return h.response({ upload: 'successful' }).code(200);
 
 	} catch (error) {

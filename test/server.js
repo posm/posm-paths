@@ -4,7 +4,7 @@ const Hapi = require('hapi');
 const config = require('../config')[process.env.ENVIRONMENT || 'develop'];
 const host = config.host;
 const server = Hapi.server({ port: 3001, host: host })
-
+const BaseSequence = require('../baseSequence');
 
 server.liftOff = async (route) => {
     try {
@@ -37,6 +37,7 @@ server.crashLanding = async () => {
 
 void async function () {
     try {
+        await BaseSequence.getInstance().init();
         if (!module.parent) {
             await server.start();
 
