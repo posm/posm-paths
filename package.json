@@ -1,0 +1,46 @@
+{
+  "name": "posm-paths",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:posm/posm-paths.git",
+  "author": "Max Grossman <m.grossman1813@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test:unit": "mocha test/**/*.js --exit",
+    "test:db": "mocha test/db.js",
+    "test:migrate": "npm run migrate:up:seed && npm run test:db",
+    "migrate:clean": "rm -f db/test-posm-paths.sqlite3 && rm -f db/posm-paths.sqlite3 && rm -f db/migrations/.migrate",
+    "migrate:up": "./node_modules/.bin/migrate up --state-file db/migrations/.migrate --migrations-dir db/migrations",
+    "migrate:down": "migrate down --state-file db/migrations/.migrate --migrations-dir db/migrations",
+    "seed": "node db/seeds/index.js",
+    "migrate:up:seed": "npm run migrate:up && npm run seed",
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "chai": "^4.1.2",
+    "d3-dispatch": "^1.0.5",
+    "dayjs": "^1.5.16",
+    "dotenv": "^5.0.1",
+    "exiftool-vendored": "^4.22.1",
+    "fs-extra": "^5.0.0",
+    "geojson-vt": "^3.2.0",
+    "hapi": "^17.4.0",
+    "inert": "^5.1.0",
+    "joi": "^13.2.0",
+    "knex": "^0.14.6",
+    "migrate": "^1.6.0",
+    "mocha": "^5.1.1",
+    "spatialite": "^0.1.0",
+    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "supercluster": "^4.1.1",
+    "taskboard": "^2.0.6"
+  },
+  "devDependencies": {
+    "async": "^2.6.1",
+    "geojson-validation": "^0.2.1",
+    "nodemon": "^1.18.4",
+    "turf-feature": "^1.0.0",
+    "turf-featurecollection": "^1.0.1"
+  }
+}
